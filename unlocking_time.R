@@ -14,7 +14,7 @@ data <- list(data1,data3,data4,data5,data6)
 for (i in 1:length(data)){
 	#Get the corresponding columns we care about out from the dataset
 	userData <- as.data.frame(data[i]) %>% select(V1,V2,V3,V4)
-	#Set proper column names to these 3 columns
+	#Set proper column names to these 4 columns
 	colnames(userData) <- c("sesID","sesType","sesPart1Len","sesPart2Len")
 	
 	##Extract unlocking session data, which we can use to compute unlocking time 
@@ -24,7 +24,10 @@ for (i in 1:length(data)){
 	##Compute "unlockingTime" in seconds, then mutate it to the original unlocking session dataset "userUSES"
 	userUSES <- userUSES %>% mutate(unlockingTime=(sesPart2Len-sesPart1Len)/1000) 
 	##Define outliers as those unlocking attempts that are longer than 20 seconds, and filter those outliers
-	userUSES <- userUSES %>% filter(unlockingTime<=20)
+	userUSES <- userUSES %>% filter(unlockingTime>0)
+	
+	fileName <- paste("/Users/lina/Documents/CPEN442/unlocking/Data/user",i,"_0.csv")
+	write.csv(userUSES,fileName)
 	
 	##use paste to create the figure name
 	figureTitle <- paste("unlockingTime Distribution for user",i)
